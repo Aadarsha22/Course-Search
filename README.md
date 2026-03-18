@@ -1,54 +1,74 @@
-# React + TypeScript + Vite
+# 🎓 Course Search Australia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and responsive web application to search and explore courses and universities across Australia with advanced filtering, pagination, and real-time map integration.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Overview
 
-## Expanding the ESLint configuration
+Course Search Australia is a powerful platform built using **React.js** and **Chakra UI** that helps users find courses based on multiple criteria such as fees, location, duration, and more.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The application uses structured data converted from Excel into JSON to deliver a fast and seamless experience.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ✨ Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 🔍 Advanced Course Search
+  - Filter by Course Name, Institution, Location, Fees, Duration
+  - Area of Study & Level of Study
+  - Estimated Total Cost
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- 📋 Detailed Course Listings
+  - CRICOS Code
+  - Institution Name
+  - Location
+  - Tuition Fees
+  - Course Duration
+
+- 📄 Pagination
+  - Efficiently browse large datasets
+  - Smooth navigation between pages
+  - Optimized performance for better user experience
+
+- ❤️ Favorite Courses
+  - Save preferred courses for later access
+
+- 🗺️ Map Integration
+  - Displays route from user's location to selected university
+
+- 🌐 Visit Website
+  - Direct link to official university website
+
+- ⚡ Optimized Performance
+  - Excel data converted into JSON for faster rendering
+
+---
+
+## 🛠️ Tech Stack
+
+- Frontend: React.js
+- UI Library: Chakra UI
+- State Management: React Hooks
+- Data Handling: JSON (converted from Excel)
+- Maps: Location-based integration
+
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/course-search-australia.git
+
+# Navigate into the project
+cd course-search-australia
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+
+## 📂 Project Structure
