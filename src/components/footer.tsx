@@ -1,61 +1,78 @@
-import { Box, Grid, Image, Link, Select, Text } from "@chakra-ui/react";
+// import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import EduSic from "../assets/images/EduSic.png";
+import { Box, Flex, Heading, Text, Divider } from "@chakra-ui/react";
 
 const Footer = () => {
+  // const [country, setCountry] = useState({
+  //   name: "Country not found ):",
+  //   code: null,
+  // });
+
+  // useEffect(() => {
+  //   fetch("https://ipapi.co/json/")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data && data.country_name && data.country_code) {
+  //         setCountry({
+  //           name: data.country_name,
+  //           code: data.country_code.toLowerCase(),
+  //         });
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setCountry({ name: "Country not found ):", code: null });
+  //     });
+  // }, []);
+
   return (
-    <Box bg="blue.400" color="white" py={6} mt={10} px={8}>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={12}>
-        <Box color={"blackAlpha.700"}>
-          <RouterLink to="/">
-            <Image src={EduSic} alt="EduSic" h={7} mb={3} />
-          </RouterLink>
-          <Text>Copyright © 2023 - AECC Global Event</Text>
-          <Text>Disclaimer Privacy Policy Terms & Conditions</Text>
-          <Text>You're accessing EduSic Search from</Text>
-          <Select
+    <Box as="footer" bg="blue.400" color="blackAlpha.700" py={6} px={8}>
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        justify="flex-start"
+        align={{ base: "flex-start", md: "center" }}
+        gap={6}
+      >
+        {/* Logo / Brand */}
+        <RouterLink to="/">
+          <Heading color="gray.800">Deedy</Heading>
+        </RouterLink>
+
+        {/* Copyright */}
+        <Text fontSize="sm" whiteSpace="nowrap">
+          © {new Date().getFullYear()} deedy
+        </Text>
+
+        {/* Country Info */}
+        {/* <Flex gap={3} justifyContent={"center"} alignItems={"center"}>
+          <Text fontSize="sm" mb={1}>
+            You're accessing EduSic Search from
+          </Text>
+          <Flex
             bg="white"
-            color="black"
-            size="sm"
-            defaultValue="Nepal"
-            mt={1}
-            width={"fit-content"}
+            px={2}
+            py={1}
+            borderRadius="md"
+            align="center"
+            gap={2}
+            width="fit-content"
           >
-            <option value="Nepal">Nepal</option>
-            <option value="India">India</option>
-            <option value="Australia">Australia</option>
-            <option value="Australia">Canada</option>
-            <option value="Australia">UK</option>
-          </Select>
-        </Box>
+            {country.code && (
+              <Image
+                src={`https://flagcdn.com/w40/${country.code}.png`}
+                alt={`${country.name} flag`}
+                boxSize="20px"
+                borderRadius="sm"
+              />
+            )}
+            <Text fontWeight="medium" fontSize="sm" color="gray.700">
+              {country.name}
+            </Text>
+          </Flex>
+        </Flex> */}
+      </Flex>
 
-        <Box color={"blackAlpha.700"}>
-          <Text fontWeight="bold" mb={3}>
-            Study Abroad
-          </Text>
-          <Link href="#">Study in Australia</Link> <br />
-          <Link href="#">Study in Canada</Link> <br />
-          <Link href="#">Study in UK</Link>
-        </Box>
-
-        <Box color={"blackAlpha.700"}>
-          <Text fontWeight="bold" mb={3}>
-            Search
-          </Text>
-          <Link href="#">Search by Courses</Link> <br />
-          <Link href="#">Search by University</Link> <br />
-          <Link href="#">Search by Careers</Link>
-        </Box>
-
-        <Box color={"blackAlpha.700"}>
-          <Text fontWeight="bold" mb={3}>
-            Helpful Links
-          </Text>
-          <Link href="#">Articles</Link> <br />
-          <Link href="#">About Us</Link> <br />
-          <Link href="#">Contact Us</Link>
-        </Box>
-      </Grid>
+      {/* Optional Divider for visual separation */}
+      <Divider mt={6} borderColor="gray.300" />
     </Box>
   );
 };

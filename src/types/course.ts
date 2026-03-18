@@ -4,6 +4,7 @@ export type Course = {
   Column4: string; // Course Name
   Column5: string; // Location City
   Column6: string; // Location State
+  Column10: string; //Field of Education
   Column19: string; // Course Language
   Column13: string; // Course type
   Column20: number; // Duration (Weeks)
@@ -15,6 +16,7 @@ export type Course = {
 export type CourseData = {
   Courses: Course[];
   Locations: Location[];
+  Institutions: Institution[];
 };
 
 export type Location = {
@@ -30,4 +32,10 @@ export type Location = {
   Column11?: string;
   Column25?: string;
   Column26?: string;
+};
+
+export type Institution = {
+  Institutions: string;
+  Column6?: string;
+  // ... any other fields
 };

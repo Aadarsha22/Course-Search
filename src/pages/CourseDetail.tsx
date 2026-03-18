@@ -1,3 +1,5 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   Box,
   Button,
@@ -5,81 +7,65 @@ import {
   Heading,
   Text,
   Flex,
-  Icon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
+  Divider,
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionButton,
+  AccordionIcon,
 } from "@chakra-ui/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  MdSchool,
-  MdLocationOn,
-  MdAccessTime,
-  MdLanguage,
-  MdAttachMoney,
-  MdInfoOutline,
-} from "react-icons/md";
+
+import { GoBookmark, GoBookmarkSlashFill } from "react-icons/go";
+
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
-const defaultLocation = {
-  city: "Sydney",
-  state: "Australia",
-};
+import courseData from "../data/updated_cricos_courses_with_locations.json";
+import { CourseData, Course } from "../types";
+
+import { toggleFavourite, isFavourite } from "../utils/favourites";
+import { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/react";
+
+const apiKey = import.meta.env.VITE_APP_API_KEY;
 
 const CourseDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
   const course = location.state?.course;
 
-  const city = course?.Column25 || defaultLocation.city;
-  const state = course?.Column26 || defaultLocation.state;
+  const locationName = course?.Column2;
 
-  const osmQuery = encodeURIComponent(`${city}, ${state}`);
+  const allCourses = (courseData as CourseData).Courses.slice(2);
+  const relatedCourses: Course[] = allCourses
+    .filter(
+      (c) =>
+        c.Column4 === course.Column4 &&
+        c.Column2 !== course.Column2 && // exclude current institution
+        c.Column3 !== course.Column3 // optionally exclude current course code
+    )
+    .slice(0, 6); // get only 4 related courses
+
+  const allInstitutions = (courseData as CourseData).Institutions.slice(2);
+  const matchedInstitution = allInstitutions.find(
+    (inst) => inst.Institutions === course.Courses
+  );
+  const websiteUrl = matchedInstitution?.Column6;
+
+  const [fav, setFav] = useState(false);
+
+  useEffect(() => {
+    if (course) {
+      setFav(isFavourite(course));
+    }
+  }, [course]);
 
   if (!course) {
     return (
       <Container>
         <Heading>No Course Found</Heading>
-        <Text fontSize="xl" color="blue.500">
-          Course is located in {defaultLocation.city}, {defaultLocation.state}
-        </Text>
-        <Box height="400px" borderRadius="md" overflow="hidden" mt={4}>
-          <iframe
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="lazy"
-            src={`https://www.openstreetmap.org/export/embed.html?bbox=-74.25909%2C40.477399%2C-73.700171%2C40.917577&amp;layer=mapnik&amp;marker=${osmQuery}`}
-            title="OpenStreetMap"
-          />
-        </Box>
-        <Flex justify="center" mt={6}>
-          <Button
-            colorScheme="teal"
-            leftIcon={<Icon as={MdSchool} />}
-            size="lg"
-            borderRadius="full"
-            boxShadow="lg"
-            _hover={{
-              bg: "teal.600",
-              transform: "scale(1.05)",
-              boxShadow: "xl",
-            }}
-            _active={{
-              bg: "teal.700",
-            }}
-            onClick={() => alert("Applying Now!")}
-          >
-            Apply Now
-          </Button>
-        </Flex>
       </Container>
     );
   }
@@ -87,136 +73,200 @@ const CourseDetail = () => {
   return (
     <Box display="flex" flexDirection="column" minH="100vh">
       <Navbar />
-      <Box flex="1" p={4}>
+      <Box flex="1" p={14}>
         <Button
           onClick={() => navigate(-1)}
           mb={4}
-          variant={"solid"}
+          variant={"outline"}
           colorScheme="gray"
         >
           ← Back
         </Button>
 
-        <Heading mb={2}>{course.Column4}</Heading>
-        <Text fontSize="lg" fontWeight="bold">
-          Institution: {course.Column2}
-        </Text>
+        <Box mb={2}>
+          <Heading mb={1}>{course.Column4}</Heading>
+          <Text fontSize="lg" fontWeight="bold" mb={4}>
+            {course.Column2}
+          </Text>
+          <Flex justifyContent={"start"} gap={4}>
+            <Button
+              borderRadius={12}
+              bg={"blue.900"}
+              color={"white"}
+              variant={"outline"}
+              _hover={{
+                bg: "white",
+                color: "blue.900",
+                borderColor: "blue.900",
+              }}
+              onClick={() => navigate("/enquiry", { state: { course } })}
+            >
+              Enquire
+            </Button>
+            <Button
+              borderRadius={12}
+              bg={"blue.400"}
+              color={"white"}
+              variant={"outline"}
+              _hover={{
+                bg: "white",
+                color: "blue.700",
+                borderColor: "blue.700",
+              }}
+              onClick={() => {
+                const urlToOpen = websiteUrl?.startsWith("http")
+                  ? websiteUrl
+                  : `https://${websiteUrl}`;
+                window.open(urlToOpen, "_blank");
+              }}
+            >
+              Visit Website
+            </Button>
+            <Button
+              borderRadius={12}
+              variant="outline"
+              borderColor="gray.800"
+              onClick={() => {
+                toggleFavourite(course);
+                const newFavState = !fav;
+                setFav(newFavState);
+
+                toast({
+                  title: newFavState
+                    ? "Course added to Favourites"
+                    : "Course removed from Favourites",
+                  status: newFavState ? "success" : "error",
+                  duration: 2000,
+                  isClosable: true,
+                  position: "bottom-right",
+                });
+              }}
+            >
+              {fav ? <GoBookmarkSlashFill /> : <GoBookmark />}
+            </Button>
+          </Flex>
+        </Box>
+        <Divider mb={2} borderColor={"gray.800"} />
 
         <Flex direction={{ base: "column", md: "row" }} gap={4} mb={4}>
           <Box flex="1" mr={{ md: 4 }}>
-            <Box bg="blue.100" p={4} borderRadius="md">
-              <Flex align="center" mb={2}>
-                <Icon as={MdLocationOn} mr={2} />
-                <Text>
-                  {course.Column25} {course.Column26 || "Australia"}
-                </Text>
-              </Flex>
+            <Accordion allowMultiple defaultIndex={[0]}>
+              <AccordionItem>
+                <h2>
+                  <AccordionButton bg={"#F0F0F0"} p={5}>
+                    <Box as="span" flex="1" textAlign="left">
+                      <Text fontWeight={"bold"}>Key Information</Text>
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Flex align="center" mb={2} mt={2}>
+                    <Text fontWeight={"bold"}>Cricos Code:</Text>
+                    <Text>{course.Column3}</Text>
+                  </Flex>
 
-              <Flex align="center" mb={2}>
-                <Icon as={MdAccessTime} mr={2} />
-                <Text>Duration: {course.Column20} weeks</Text>
-              </Flex>
+                  <Flex align="start" mb={2} flexDirection={"column"}>
+                    <Text fontWeight={"bold"}>Address</Text>
+                    <Text>
+                      {course.Column25} {course.Column26 || "Australia"}
+                    </Text>
+                  </Flex>
 
-              <Flex align="center" mb={2}>
-                <Icon as={MdLanguage} mr={2} />
-                <Text>Course Language: {course.Column19}</Text>
-              </Flex>
+                  <Flex align="start" mb={2} flexDirection={"column"}>
+                    <Text fontWeight={"bold"}>Duration</Text>{" "}
+                    <Text> {course.Column20} weeks</Text>
+                  </Flex>
 
-              <Flex align="center" mb={2}>
-                <Icon as={MdAttachMoney} mr={2} />
-                <Text fontSize="xl" color="green.500">
-                  {course.Column21}
-                </Text>
-              </Flex>
+                  <Flex align="start" mb={2} flexDirection={"column"}>
+                    <Text fontWeight={"bold"}>Course Language</Text>
+                    <Text> {course.Column19}</Text>
+                  </Flex>
 
-              <Flex justify="center" mt={4}>
-                <Button
-                  colorScheme="green"
-                  leftIcon={<Icon as={MdSchool} />}
-                  size="lg"
-                  borderRadius="full"
-                  boxShadow="lg"
-                  _hover={{
-                    bg: "green.600",
-                    transform: "scale(1.05)",
-                    boxShadow: "xl",
-                  }}
-                  _active={{
-                    bg: "green.700",
-                  }}
-                >
-                  Apply Now
-                </Button>
-              </Flex>
-            </Box>
+                  <Flex flexDirection={"row"} justifyContent={"space-between"}>
+                    <Flex align="start" mb={2} flexDirection={"column"}>
+                      <Text fontWeight={"bold"}>Tuition Fee</Text>
+                      <Text>AUD ${course.Column21}</Text>
+                    </Flex>
+
+                    <Flex align="start" mb={2} flexDirection={"column"}>
+                      <Text fontWeight={"bold"}>Non Tuition Fee</Text>
+                      <Text>AUD ${course.Column22}</Text>
+                    </Flex>
+
+                    <Flex align="start" mb={2} flexDirection={"column"}>
+                      <Text fontWeight={"bold"}>Total Tuition Costs</Text>
+                      <Text>AUD ${course.Column23}</Text>
+                    </Flex>
+                  </Flex>
+                </AccordionPanel>
+              </AccordionItem>
+
+              <AccordionItem>
+                <h2>
+                  <AccordionButton bg={"#F0F0F0"} p={5}>
+                    <Box as="span" flex="1" textAlign="left">
+                      <Text fontWeight={"bold"}>Related Courses</Text>
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel pb={4}>
+                  <Flex wrap="wrap" gap={4}>
+                    {relatedCourses.length > 0 ? (
+                      relatedCourses.map((related, index) => (
+                        <Box
+                          key={index}
+                          flex="1 1 calc(50% - 1rem)" // two cards per row with gap
+                          minW="250px"
+                          maxW="400px"
+                          p={4}
+                          border="1px solid"
+                          borderColor="gray.300"
+                          borderRadius="md"
+                          cursor="pointer"
+                          _hover={{ bg: "gray.100" }}
+                          onClick={() =>
+                            navigate(`/course/${related.Column2}`, {
+                              state: { course: related },
+                            })
+                          }
+                        >
+                          <Text fontSize="md" fontWeight="bold">
+                            {related.Column4}
+                          </Text>
+                          <Text fontSize="sm" color="gray.600">
+                            {related.Column2}
+                          </Text>
+                        </Box>
+                      ))
+                    ) : (
+                      <Text color="gray.500">No related courses found.</Text>
+                    )}
+                  </Flex>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
           </Box>
 
-          <Box flex="1" height="400px" borderRadius="md" overflow="hidden">
+          <Box flex="1" height="419px" borderRadius="md" overflow="hidden">
             <iframe
               width="100%"
               height="100%"
               style={{ border: 0 }}
               loading="lazy"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=150.644%2C-34.1186%2C151.355%2C-33.865%2C%20&layer=mapnik&marker=-33.8688%2C151.2093"
-              title="OpenStreetMap"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps/embed/v1/directions?key=${encodeURIComponent(
+                apiKey
+              )}&origin=My+Location&destination=${encodeURIComponent(
+                locationName
+              )}`}
+              title="Google Map"
             />
           </Box>
         </Flex>
-
-        <Text fontSize="lg" color="blue.500">
-          {`Course is located in ${state}`}
-        </Text>
-
-        <Box mt={6} textAlign="center">
-          <Button
-            colorScheme="teal"
-            leftIcon={<Icon as={MdInfoOutline} />}
-            onClick={onOpen}
-          >
-            Scholarship Information
-          </Button>
-        </Box>
       </Box>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Scholarship Terms & Conditions</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text fontSize="lg" mb={4}>
-              To apply for the scholarship, you must meet the following
-              criteria:
-            </Text>
-            <Text>
-              1. A minimum score of 6.0 in IELTS (or equivalent PTE score).
-            </Text>
-            <Text>
-              2. Completion of a high school (+2) or Bachelor's degree.
-            </Text>
-            <Text>
-              3. Proof of proficiency in the course's language (e.g., English).
-            </Text>
-            <Text>
-              4. A completed application form with necessary documents.
-            </Text>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="red"
-              variant={"outline"}
-              mr={3}
-              onClick={onClose}
-            >
-              Close
-            </Button>
-            <Button variant="solid" colorScheme="blue">
-              Apply Now
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       <Footer />
     </Box>

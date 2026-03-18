@@ -1,0 +1,43 @@
+{
+  "Institutions": [
+    {
+      "Institutions": "CRICOS Provider Code",
+      "Column2": "Trading Name",
+      "Column3": "Institution Name",
+      "Column4": "Institution Type",
+      "Column5": "Institution Capacity",
+      "Column6": "Website",
+      "Column7": "Postal Address Line 1",
+      "Column8": "Postal Address Line 2",
+      "Column9": "Postal Address Line 3",
+      "Column10": "Postal Address Line 4",
+      "Column11": "Postal Address City",
+      "Column12": "Postal Address State",
+      "Column13": "Postal Address Postcode"
+    },
+    {
+      "Institutions": "00001K",
+      "Column3": "Canberra Institute of Technology",
+      "Column4": "Government",
+      "Column5": 1110,
+      "Column6": "https://international.cit.edu.au/",
+      "Column7": "International Services Unit",
+      "Column8": "PO Box 226",
+      "Column11": "JAMISON",
+      "Column12": "ACT",
+      "Column13": "2614"
+    },
+    {
+      "Institutions": "00002J",
+      "Column2": "Macquarie University",
+      "Column3": "Macquarie University (Macquarie)",
+      "Column4": "Government",
+      "Column5": 11500,
+      "Column6": "www.mq.edu.au",
+      "Column7": "Corner Herring & Balaclava Roads",
+      "Column11": "NORTH RYDE",
+      "Column12": "NSW",
+      "Column13": "2109"
+    }
+  ]
+}
