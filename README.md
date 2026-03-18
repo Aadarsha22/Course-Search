@@ -60,7 +60,7 @@ The application uses structured data converted from Excel into JSON to deliver a
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/course-search-australia.git
+https://github.com/Aadarsha22/Course-Search.git
 
 # Navigate into the project
 cd course-search-australia
