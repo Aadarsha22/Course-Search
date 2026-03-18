@@ -32,7 +32,7 @@ import { FaLanguage } from "react-icons/fa";
 import { AiFillDollarCircle } from "react-icons/ai";
 import { IconType } from "react-icons";
 
-import courseData from "../../data/updated_cricos_courses_with_locations.json";
+import courseData from "../../data/courseFilterData.json";
 import { useCourseStore } from "../../store/useCourseStore";
 import Pagination from "../pagination";
 import { Course, CourseData } from "../../types";
@@ -89,12 +89,16 @@ export const CourseSearch = () => {
   ];
 
   useEffect(() => {
-    const rawCourses = (courseData as CourseData).Courses.slice(2).filter(
+    const rawCourses = (courseData as unknown as CourseData).Courses.slice(
+      2,
+    ).filter(
       (course) =>
-        course.Column2 && course.Column4 && course.Column20 && course.Column21
+        course.Column2 && course.Column4 && course.Column20 && course.Column21,
     );
 
-    const rawLocations = (courseData as CourseData).Locations.slice(2);
+    const rawLocations = (courseData as unknown as CourseData).Locations.slice(
+      2,
+    );
     const locationsMap = new Map();
     rawLocations.forEach((location) => {
       locationsMap.set(location.Column2, location);
@@ -120,8 +124,8 @@ export const CourseSearch = () => {
       new Set(
         mergedCourses
           .map((course) => course.Column10)
-          .filter((val): val is string => val !== "Unknown Area")
-      )
+          .filter((val): val is string => val !== "Unknown Area"),
+      ),
     );
     setUniqueAreas(areas);
 
@@ -129,8 +133,8 @@ export const CourseSearch = () => {
       new Set(
         mergedCourses
           .map((course) => course.Column13)
-          .filter((val): val is string => val !== "Unknown Level")
-      )
+          .filter((val): val is string => val !== "Unknown Level"),
+      ),
     );
     setUniqueLevels(levels);
   }, []);
@@ -147,14 +151,14 @@ export const CourseSearch = () => {
     if (searchCourseName) {
       const query = searchCourseName.toLowerCase();
       results = results.filter((course) =>
-        course.Column4?.toLowerCase().includes(query)
+        course.Column4?.toLowerCase().includes(query),
       );
     }
 
     if (searchInstitution) {
       const query = searchInstitution.toLowerCase();
       results = results.filter((course) =>
-        course.Column2?.toLowerCase().includes(query)
+        course.Column2?.toLowerCase().includes(query),
       );
     }
 
@@ -163,21 +167,21 @@ export const CourseSearch = () => {
       results = results.filter(
         (course) =>
           course.Column25?.toLowerCase().includes(query) ||
-          course.Column26?.toLowerCase().includes(query)
+          course.Column26?.toLowerCase().includes(query),
       );
     }
 
     // Multi-select Area of Study filter (OR logic)
     if (selectedAreas.length > 0) {
       results = results.filter((course) =>
-        selectedAreas.includes(course.Column10)
+        selectedAreas.includes(course.Column10),
       );
     }
 
     // Multi-select Level of Study filter (OR logic)
     if (selectedLevels.length > 0) {
       results = results.filter((course) =>
-        selectedLevels.includes(course.Column13)
+        selectedLevels.includes(course.Column13),
       );
     }
 
@@ -440,15 +444,15 @@ export const CourseSearch = () => {
                         tabIndex === 0
                           ? "Course Name"
                           : tabIndex === 1
-                          ? "Institution"
-                          : "Location"
+                            ? "Institution"
+                            : "Location"
                       }`}
                       value={
                         tabIndex === 0
                           ? searchCourseNameInput
                           : tabIndex === 1
-                          ? searchInstitutionInput
-                          : searchLocationInput
+                            ? searchInstitutionInput
+                            : searchLocationInput
                       }
                       onChange={(e) => {
                         const value = e.target.value;
@@ -529,7 +533,7 @@ export const CourseSearch = () => {
                                 .filter((area) =>
                                   area
                                     .toLowerCase()
-                                    .includes(areaSearch.toLowerCase())
+                                    .includes(areaSearch.toLowerCase()),
                                 )
                                 .map((area, idx) => (
                                   <MenuItem
@@ -575,7 +579,7 @@ export const CourseSearch = () => {
                                 .filter((level) =>
                                   level
                                     .toLowerCase()
-                                    .includes(levelSearch.toLowerCase())
+                                    .includes(levelSearch.toLowerCase()),
                                 )
                                 .map((level, idx) => (
                                   <MenuItem
@@ -615,7 +619,7 @@ export const CourseSearch = () => {
                                   key={idx}
                                   onClick={() => addSelectedCostRange(range)}
                                   isDisabled={selectedCostRanges.includes(
-                                    range
+                                    range,
                                   )}
                                 >
                                   {range}

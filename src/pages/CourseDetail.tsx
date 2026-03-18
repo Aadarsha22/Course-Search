@@ -20,7 +20,7 @@ import { GoBookmark, GoBookmarkSlashFill } from "react-icons/go";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
-import courseData from "../data/updated_cricos_courses_with_locations.json";
+import courseData from "../data/courseFilterData.json";
 import { CourseData, Course } from "../types";
 
 import { toggleFavourite, isFavourite } from "../utils/favourites";
@@ -38,7 +38,7 @@ const CourseDetail = () => {
 
   const locationName = course?.Column2;
 
-  const allCourses = (courseData as CourseData).Courses.slice(2);
+  const allCourses = (courseData as unknown as CourseData).Courses.slice(2);
   const relatedCourses: Course[] = allCourses
     .filter(
       (c) =>
@@ -48,7 +48,7 @@ const CourseDetail = () => {
     )
     .slice(0, 6); // get only 4 related courses
 
-  const allInstitutions = (courseData as CourseData).Institutions.slice(2);
+  const allInstitutions = (courseData as unknown as CourseData).Institutions.slice(2);
   const matchedInstitution = allInstitutions.find(
     (inst) => inst.Institutions === course.Courses
   );

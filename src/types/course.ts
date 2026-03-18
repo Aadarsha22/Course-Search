@@ -37,5 +37,4 @@ export type Location = {
 export type Institution = {
   Institutions: string;
   Column6?: string;
-  // ... any other fields
 };
